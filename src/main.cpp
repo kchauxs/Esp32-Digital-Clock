@@ -15,15 +15,14 @@
 #define INTERVAL 5000
 #define TIMEOUT_AP 120
 
-unsigned int intensity;
-
 const char *ntpServer = "pool.ntp.org";
 const char *TZ_INFO = "EST5EDT,M3.2.0,M11.1.0";
 
 String apName = "That Watch 😱🔥";
 String apPassword = "what_watch!";
 
-bool isNTP;
+bool isNTPConnected;
+unsigned int intensity;
 
 WiFiManager wm;
 MD_Parola Display = MD_Parola(HARDWARE_TYPE, CS_PIN, MAX_DEVICES);
@@ -47,9 +46,9 @@ void showTime()
       Display.displayClear();
       Display.print(hour.c_str());
 
-      if (!isNTP)
+      if (!isNTPConnected)
       {
-        isNTP = true;
+        isNTPConnected = true;
         wm.disconnect();
         wm.~WiFiManager();
         WiFi.mode(WIFI_OFF);
@@ -144,7 +143,7 @@ void setup()
   delay(1000);
   Serial.println(WiFi.localIP());
 
-  isNTP = false;
+  isNTPConnected = false;
   configTzTime(TZ_INFO,
                "time.nist.gov",
                "0.pool.ntp.org",
